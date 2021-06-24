@@ -1,8 +1,8 @@
-﻿using Accounting.Core.Entity.AccountingManagement;
-using Accounting.WebHost.Models;
+﻿using Accounts.Core.Domain.AccountsManagement;
+using Accounts.WebHost.Models;
 using AutoMapper;
 
-namespace Accounting.WebHost.Maps
+namespace Accounts.WebHost.Maps
 {
     public class AccountMap : Profile   
     {

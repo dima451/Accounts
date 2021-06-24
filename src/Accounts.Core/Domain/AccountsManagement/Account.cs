@@ -1,4 +1,6 @@
-﻿namespace Accounting.Core.Entity.AccountingManagement
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Accounts.Core.Domain.AccountsManagement
 {
     public class Account : BaseEntity
     {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Accounting.WebHost
+namespace Accounts.WebHost
 {
     public class Program
     {

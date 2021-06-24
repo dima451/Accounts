@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Accounting.WebHost.Models
+namespace Accounts.WebHost.Models
 {
     public class AccountResponse
     {

@@ -1,24 +1,21 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Accounting.Core.Entity.AccountingManagement;
-using Accounting.Core.Repository;
+using Accounts.Core.Abstractions.Repository;
+using Accounts.Core.Abstractions.Services;
+using Accounts.Core.Domain.AccountsManagement;
 using Accounts.DataAcess.Data;
 using Accounts.DataAcess.Repositories;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Accounts.Services;
+using Accounts.Services.Abstractions;
 
-namespace Accounting.WebHost
+namespace Accounts.WebHost
 {
     public class Startup
     {
@@ -49,9 +46,11 @@ namespace Accounting.WebHost
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
+            services.AddScoped<IPasswordService, PasswordService>();
 
             services.AddScoped<IRepository<Account>, EFRepository<Account>>();
-            
+            services.AddScoped<IEntityService<Account>, AccountService>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Accounting.WebHost", Version = "v1" });

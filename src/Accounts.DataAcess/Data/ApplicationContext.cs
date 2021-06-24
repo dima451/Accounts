@@ -1,4 +1,4 @@
-﻿using Accounting.Core.Entity.AccountingManagement;
+﻿using Accounts.Core.Domain.AccountsManagement;
 using Microsoft.EntityFrameworkCore;
 
 namespace Accounts.DataAcess.Data

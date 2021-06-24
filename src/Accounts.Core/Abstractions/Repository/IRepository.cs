@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Accounting.Core.Entity;
+using Accounts.Core.Domain;
 
-namespace Accounting.Core.Repository
+namespace Accounts.Core.Abstractions.Repository
 {
     public interface IRepository<T> where T: BaseEntity
     {

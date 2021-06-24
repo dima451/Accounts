@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Accounting.Core.Entity
+namespace Accounts.Core.Domain
 {
     public abstract class BaseEntity
     {

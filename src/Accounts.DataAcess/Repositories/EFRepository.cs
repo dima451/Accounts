@@ -1,10 +1,10 @@
-﻿using Accounting.Core.Entity;
-using Accounting.Core.Repository;
+﻿using Accounts.Core.Abstractions.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Accounts.Core.Domain;
 using Accounts.DataAcess.Data;
 using Microsoft.EntityFrameworkCore;
 
