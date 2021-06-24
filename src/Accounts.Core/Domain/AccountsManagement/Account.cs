@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Accounts.Core.Domain.AccountsManagement
+﻿namespace Accounts.Core.Domain.AccountsManagement
 {
     public class Account : BaseEntity
     {
