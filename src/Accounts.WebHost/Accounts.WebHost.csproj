@@ -5,11 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\Accounts.Core\Accounts.Core.csproj" />
+    <ProjectReference Include="..\Accounts.DataAcess\Accounts.DataAcess.csproj" />
   </ItemGroup>
 
 </Project>

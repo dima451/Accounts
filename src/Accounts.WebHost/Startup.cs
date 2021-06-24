@@ -11,6 +11,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Accounting.Core.Entity.AccountingManagement;
+using Accounting.Core.Repository;
+using Accounts.DataAcess.Data;
+using Accounts.DataAcess.Repositories;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Accounting.WebHost
 {
@@ -28,6 +34,24 @@ namespace Accounting.WebHost
         {
 
             services.AddControllers();
+
+
+            services.AddDbContext<ApplicationContext>((x) =>
+            {
+                x.UseSqlite("FileName=AccountsDb.sqlite", x => x.MigrationsAssembly(typeof(Startup).Assembly.FullName));
+            });
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddMaps(typeof(Startup).Assembly);
+            });
+
+            var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+
+            services.AddScoped<IRepository<Account>, EFRepository<Account>>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Accounting.WebHost", Version = "v1" });
@@ -44,6 +68,8 @@ namespace Accounting.WebHost
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Accounting.WebHost v1"));
             }
 
+            Migrate(app);
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -54,6 +80,14 @@ namespace Accounting.WebHost
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static void Migrate(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+            context.Database.Migrate();
         }
     }
 }
