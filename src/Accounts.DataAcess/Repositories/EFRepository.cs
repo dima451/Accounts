@@ -64,9 +64,11 @@ namespace Accounts.DataAcess.Repositories
         {
             try
             {
-                var entry = await _dbSet.FindAsync(id);
-
+                var entry = await _dbSet.AsNoTracking().FirstAsync(c=>c.Id == id);//.FindAsync(id);
+                value.Id = id;
                 entry = value;
+
+                _dbSet.Update(entry);
 
                 await _dbContext.SaveChangesAsync();
 
