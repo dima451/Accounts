@@ -38,6 +38,7 @@ namespace Accounts.Services
             if (!String.IsNullOrEmpty(result))
                 return result;
 
+            value.Password = _passwordService.Encrypt(value.Password);
             await _repository.CreateAsync(value);
 
             return result;
@@ -57,6 +58,11 @@ namespace Accounts.Services
                 accounts = accounts.Where(c => c.Domain == filters.First()).ToList();
             }
 
+            foreach (var account in accounts)
+            {
+                account.Password = _passwordService.Decrypt(account.Password);
+            }
+
             accounts = accounts.OrderBy(c => c.Domain).ThenBy(c => c.UserName).ToList();
 
             return accounts;
@@ -64,7 +70,11 @@ namespace Accounts.Services
 
         public async Task<Account> GetByIdAsync(Guid id)
         {
-            return await _repository.GetByIdAsync(id);
+            var result = await _repository.GetByIdAsync(id);
+
+            result.Password = _passwordService.Decrypt(result.Password);
+
+            return result;
         }
 
         public async Task<string> UpdateAsync(Guid id, Account value)
@@ -74,15 +84,15 @@ namespace Accounts.Services
             var existingAccount = (await _repository.GetWithIncludeAsync(c =>
                     c.Domain.ToLower() == value.Domain.ToLower() && c.UserName == value.UserName && c.Id != id)).ToList();
 
-
             if (existingAccount.Count > 0)
                 result+="Account with same name and domain exists.";
-
 
             result += await ValidatePassword(value);
 
             if (!String.IsNullOrEmpty(result))
                 return result;
+
+            value.Password = _passwordService.Encrypt(value.Password);
 
             await _repository.UpdateAsync(id, value);
 

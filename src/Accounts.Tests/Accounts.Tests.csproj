@@ -19,4 +19,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Accounts.Core\Accounts.Core.csproj" />
+    <ProjectReference Include="..\Accounts.DataAcess\Accounts.DataAcess.csproj" />
+    <ProjectReference Include="..\Accounts.Services\Accounts.Services.csproj" />
+    <ProjectReference Include="..\Accounts.WebHost\Accounts.WebHost.csproj" />
+  </ItemGroup>
+
 </Project>

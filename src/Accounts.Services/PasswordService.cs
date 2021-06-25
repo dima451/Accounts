@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Accounts.Core.Abstractions.Services;
-using Accounts.Core.Domain.AccountsManagement;
 using Accounts.Services.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
@@ -20,12 +21,47 @@ namespace Accounts.Services
 
         public string Decrypt(string value)
         {
-            throw new NotImplementedException();
+            string EncryptionKey = "testkey";
+            byte[] cipherBytes = Convert.FromBase64String(value);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                encryptor.Mode = CipherMode.CBC;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.Close();
+                    }
+                    value = Encoding.Unicode.GetString(ms.ToArray());
+                }
+            }
+            return value;
         }
 
         public string Encrypt(string value)
         {
-            throw new NotImplementedException();
+            string EncryptionKey = "testkey";
+            byte[] clearBytes = Encoding.Unicode.GetBytes(value);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    value = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return value;
         }
 
         public async Task<IdentityResult> ValidateAsync(string password)
@@ -36,16 +72,16 @@ namespace Accounts.Services
             {
                 errors.Add(new IdentityError
                 {
-                        Description = $"Minimal lenght password is {_requiredLength}"
+                    Description = $"Minimal lenght password is {_requiredLength}"
                 });
             }
-            string pattern = "/(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/g";
+            string pattern = @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$";
 
             if (!Regex.IsMatch(password, pattern))
             {
                 errors.Add(new IdentityError
                 {
-                        Description = "Password should has numbers, letters and special symbols"
+                    Description = "Password should has numbers, letters and special symbols"
                 });
             }
 
@@ -53,5 +89,6 @@ namespace Accounts.Services
 
             return await Task.FromResult(result);
         }
+
     }
 }
